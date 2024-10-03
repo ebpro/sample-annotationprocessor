@@ -31,8 +31,9 @@ public class DTOProcessor extends AbstractProcessor {
                     return new %2$s(%5$s);
                 }
             }""";
+
     /**
-     * A Messager to emit message during annotation processing
+     * A Messager to emit messages during annotation processing
      */
     private Messager messager;
 
@@ -53,9 +54,9 @@ public class DTOProcessor extends AbstractProcessor {
     }
 
     /**
+     * Initializes the processor with the processing environment
      *
      * @param processingEnv environment to access facilities the tool framework
-     * initialize the messenger.
      */
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -64,6 +65,7 @@ public class DTOProcessor extends AbstractProcessor {
     }
 
     /**
+     * Processes the annotations and generates DTO classes
      *
      * @param annotations the annotation interfaces requested to be processed
      * @param roundEnv  environment for information about the current and prior round
@@ -83,12 +85,13 @@ public class DTOProcessor extends AbstractProcessor {
     }
 
     /**
-     * Generates DTO classes for each uniq values of @DTO parameter
+     * Generates DTO classes for each unique value of @DTO parameter
+     *
      * @param baseClass The class to generate DTO for.
      * @param dtoAnnotations the list of fields in every DTO (grouped by values).
      */
     private void writeRecord(Element baseClass, Map<String, List<DTOAnnotation>> dtoAnnotations) {
-        //We compute the base class and package names.
+        // We compute the base class and package names.
         final String className = baseClass.asType().toString();
         final int lastDot = className.lastIndexOf('.');
         final String packageName = (lastDot > 0) ? className.substring(0, lastDot) : "";
@@ -111,10 +114,10 @@ public class DTOProcessor extends AbstractProcessor {
                 JavaFileObject targetFile = processingEnv.getFiler().createSourceFile(dtoClassName);
                 try (PrintWriter out = new PrintWriter(targetFile.openWriter())) {
                     out.print(DTO_CLASS_PATTERN.formatted(packageName.isEmpty() ? "" : "package " + packageName + ";",
-                                    dtoSimpleClassName,
-                                    fieldsDeclarations,
-                                    simpleClassName,
-                                    fieldList));
+                            dtoSimpleClassName,
+                            fieldsDeclarations,
+                            simpleClassName,
+                            fieldList));
                 }
             } catch (IOException ex) {
                 messager.printMessage(Diagnostic.Kind.ERROR, "Unable to create target %s.".formatted(dtoClassName));
@@ -124,5 +127,4 @@ public class DTOProcessor extends AbstractProcessor {
 
     private record DTOAnnotation(Element field, DTO annotation) {
     }
-
 }

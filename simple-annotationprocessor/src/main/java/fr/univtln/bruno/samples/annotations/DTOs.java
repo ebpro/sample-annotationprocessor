@@ -2,9 +2,10 @@ package fr.univtln.bruno.samples.annotations;
 
 import java.lang.annotation.*;
 
-
 /**
- * An annotation to make @DTO repeatable
+ * The DTOs annotation is used to make the @DTO annotation repeatable.
+ * It allows multiple @DTO annotations to be applied to a single field.
+ *
  * @see DTO
  */
 @Documented
